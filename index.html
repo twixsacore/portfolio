@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TWIXSA — вертикальный монтаж</title>
+<meta name="description" content="Вертикальный монтаж: Shorts, Reels, TikTok">
+<link rel="preload" href="fonts/Bebas-Neue-Cyrillic.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/BebasNeue-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/Montserrat-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+/* Латиница, цифры и знаки — из оригинального Bebas Neue (в кириллической сборке «+» нарисован как «±»),
+   кириллица — из кириллической сборки */
+@font-face{font-family:"Bebas Neue";src:url("fonts/BebasNeue-Regular.ttf") format("truetype");font-weight:400;font-display:swap;unicode-range:U+0000-03FF,U+2000-206F,U+20AC,U+2116,U+2190-21FF}
+@font-face{font-family:"Bebas Neue";src:url("fonts/Bebas-Neue-Cyrillic.ttf") format("truetype");font-weight:400;font-display:swap;unicode-range:U+0400-04FF}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Light.ttf") format("truetype");font-weight:300;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Italic.ttf") format("truetype");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Medium.ttf") format("truetype");font-weight:500;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-SemiBold.ttf") format("truetype");font-weight:600;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+:root{
+  /* Палитра: чёрный + фиолетовый. Имена переменных остались от исходного шаблона:
+     cyan* — основной фиолетовый акцент, sky/lime* — светлые лавандово-розовые оттенки градиента */
+  --bg:#06030c; --panel:#110a1e; --panel-hover:#1c1030;
+  --cyan:#a855f7; --cyan-200:#ddd6fe; --cyan-300:#c4b5fd; --sky-300:#d8b4fe; --lime-200:#f5d0fe; --lime-300:#f0abfc;
+  --fuchsia:#d946ef; --green:#7c3aed;
+  --text:#f5f3ff; --muted:#a59bbd; --dim:#6e6585; --zinc-400:#a7a1b5; --zinc-500:#776f88; --zinc-600:#564e66; --zinc-800:#2a2335;
+  --line:rgba(168,85,247,.12);
+  --f-sans:"Montserrat",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"Montserrat",ui-sans-serif,system-ui,sans-serif;
+  --f-display:"Bebas Neue","Arial Narrow",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--f-sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(168,85,247,.25);color:#fff}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block;flex:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+@media(min-width:640px){.wrap{padding:0 24px}}
+@media(min-width:1024px){.wrap{padding:0 32px}}
+.mono{font-family:var(--f-mono)}
+.display{font-family:var(--f-display)}
+.grad-text{background:linear-gradient(90deg,#c4b5fd,#a855f7 50%,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- Космический фон ---------- */
+.bg{position:absolute;inset:0;min-height:100vh;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
+.stars{position:absolute;top:0;left:0;border-radius:50%}
+.stars.s1{width:2px;height:2px;animation:starsUp 120s linear infinite}
+.stars.s2{width:3px;height:3px;animation:starsUp 80s linear infinite}
+.stars.s3{width:4px;height:4px;animation:starsUp 50s linear infinite}
+@keyframes starsUp{to{transform:translateY(-100vh)}}
+.grid-wrap{position:absolute;inset:0;perspective:1000px}
+.grid-floor{position:absolute;width:200%;height:200%;left:-50%;top:20%;
+  background-image:linear-gradient(rgba(168,85,247,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.2) 1px,transparent 1px);
+  background-size:80px 80px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 40%,transparent 80%);mask-image:linear-gradient(to bottom,transparent 0%,#000 40%,transparent 80%);
+  transform:rotateX(75deg);animation:gridFlow 3s linear infinite}
+@keyframes gridFlow{to{transform:rotateX(75deg) translateY(80px)}}
+.nebula{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:nebulaMove 8s ease-in-out infinite}
+@keyframes nebulaMove{0%,100%{opacity:.5;transform:scale(1) translate(0)}33%{opacity:.9;transform:scale(1.15) translate(4%,6%)}66%{opacity:.6;transform:scale(.9) translate(-3%,-5%)}}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 0%,var(--bg) 85%)}
+.beam{position:absolute;top:-20%;height:150vh;filter:blur(40px);animation:pulseSlow 6s ease-in-out infinite}
+@keyframes pulseSlow{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ---------- Header ---------- */
+header{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);background:rgba(6,3,12,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px}
+.logo span{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1;letter-spacing:.06em;background:linear-gradient(90deg,var(--cyan-200),#fff,var(--lime-200));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo i{width:6px;height:6px;border-radius:50%;background:var(--cyan-300);box-shadow:0 0 18px rgba(168,85,247,.9);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.5}}
+.nav-right{display:flex;align-items:center;gap:24px}
+.lang{position:relative;display:flex;padding:4px;border-radius:999px;background:rgba(17,10,30,.8);border:1px solid rgba(168,85,247,.15);box-shadow:inset 0 0 18px rgba(168,85,247,.05)}
+.lang button{position:relative;z-index:1;padding:4px 12px;font-family:var(--f-mono);font-size:12px;color:var(--zinc-500);transition:color .3s}
+.lang button.on{color:#fff}
+.lang .pill{position:absolute;top:4px;bottom:4px;border-radius:999px;background:rgba(196,181,253,.1);border:1px solid rgba(196,181,253,.25);transition:left .35s cubic-bezier(.4,1.4,.5,1),width .35s}
+.btn-cta-sm{display:none;align-items:center;gap:6px;padding:6px 16px;border-radius:999px;background:var(--cyan-200);color:var(--bg);font-weight:600;font-size:12px;box-shadow:0 0 24px rgba(168,85,247,.16);transition:all .2s}
+.btn-cta-sm:hover{background:var(--lime-200);transform:scale(1.05)}
+@media(min-width:640px){.btn-cta-sm{display:inline-flex}}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;z-index:10;padding:96px 0 80px;display:flex;flex-direction:column;align-items:center;text-align:center}
+@media(min-width:640px){.hero{padding:128px 0 112px}}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:54px;line-height:.92;letter-spacing:.005em;text-transform:uppercase;text-wrap:balance;max-width:1024px;color:#faf5ff;filter:drop-shadow(0 0 28px rgba(168,85,247,.18))}
+/* Каждая фраза — своя строка. Самая длинная строка ≈ 11.1em в Bebas Neue,
+   поэтому кегль считается от ширины экрана, чтобы она влезала без переноса */
+.hero h1 .line{display:block}
+@media(min-width:640px){.hero h1{max-width:none;font-size:min(104px,calc((100vw - 48px) / 11.6))}.hero h1 .line{white-space:nowrap}}
+@media(min-width:1024px){.hero h1{font-size:min(104px,calc((100vw - 64px) / 11.6))}}
+.hero p.lead{margin-top:32px;font-size:18px;line-height:1.65;font-weight:300;color:rgba(203,213,225,.85);max-width:768px}
+@media(min-width:640px){.hero p.lead{font-size:20px}}
+.hero-btns{margin-top:40px;display:flex;flex-direction:column;gap:16px;width:100%;align-items:center}
+@media(min-width:640px){.hero-btns{flex-direction:row;justify-content:center;width:auto}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 32px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.025em;transition:all .2s;width:100%}
+@media(min-width:640px){.btn{width:auto}}
+.btn-primary{background:var(--cyan-200);color:var(--bg)}
+.btn-primary:hover{background:var(--lime-200);box-shadow:0 0 34px rgba(168,85,247,.22)}
+.btn-primary:hover svg{transform:translateX(3px)}
+.btn-primary svg{transition:transform .2s}
+.btn-ghost{background:rgba(17,10,30,.85);border:1px solid rgba(196,181,253,.15);color:rgba(245,243,255,.8);backdrop-filter:blur(12px)}
+.btn-ghost:hover{background:var(--panel-hover);border-color:rgba(196,181,253,.35)}
+.stats{margin-top:112px;width:100%;max-width:1024px;display:grid;grid-template-columns:1fr;gap:24px;border-top:1px solid var(--line);padding-top:48px;text-align:left}
+@media(min-width:640px){.stats{margin-top:128px;gap:32px}}
+@media(min-width:768px){.stats{grid-template-columns:repeat(3,1fr)}}
+.stat{padding:24px;border-radius:16px;background:rgba(17,10,30,.58);border:1px solid rgba(196,181,253,.1);backdrop-filter:blur(12px);box-shadow:inset 0 0 24px rgba(168,85,247,.03);transition:border-color .3s}
+.stat:hover{border-color:rgba(196,181,253,.3)}
+.stat-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.stat-head span{font-family:var(--f-mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:rgba(148,163,184,.7)}
+.stat-num{font-family:var(--f-display);font-weight:400;font-size:46px;line-height:1;color:#fff;transition:color .3s}
+@media(min-width:640px){.stat-num{font-size:54px}}
+.stat:hover .stat-num{color:var(--cyan-200)}
+.stat-sub{font-size:12px;color:var(--dim);margin-top:4px}
+
+/* ---------- Works ---------- */
+.works-zone{position:relative;width:100%;overflow:hidden}
+.glow{position:absolute;border-radius:50%;pointer-events:none}
+#works{position:relative;z-index:10;padding-top:64px;padding-bottom:64px;border-top:1px solid var(--line)}
+#works canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.7;z-index:-1;pointer-events:none}
+.fade-top,.fade-bot{position:absolute;left:0;right:0;height:128px;z-index:-1;pointer-events:none}
+.fade-top{top:0;background:linear-gradient(to bottom,var(--bg),transparent)}
+.fade-bot{bottom:0;background:linear-gradient(to top,var(--bg),transparent)}
+.works-head{display:flex;flex-direction:column;justify-content:space-between;gap:24px;margin-bottom:48px}
+@media(min-width:1180px){.works-head{flex-direction:row;align-items:center}}
+.works-head h2{white-space:nowrap}
+.works-head h2{font-family:var(--f-display);font-weight:400;font-size:38px;line-height:1;letter-spacing:.01em;text-transform:uppercase;color:#f5f3ff}
+@media(min-width:640px){.works-head h2{font-size:48px}}
+.tabs{position:relative;display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;max-width:100%;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{position:relative;z-index:1;padding:8px 16px;border-radius:999px;font-size:12px;white-space:nowrap;color:var(--zinc-400);transition:color .3s}
+@media(min-width:640px){.tabs button{font-size:14px}}
+.tabs button:hover{color:#e4e4e7}
+.tabs button.on{color:#fff}
+.tabs .pill{position:absolute;top:0;height:calc(100% - 8px);border-radius:999px;background:rgba(196,181,253,.1);border:1px solid rgba(196,181,253,.2);transition:left .4s cubic-bezier(.4,1.3,.5,1),width .4s}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.grid{gap:24px}}
+@media(min-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1280px){.grid{grid-template-columns:repeat(4,1fr)}}
+/* Горизонтальные работы — отдельной сеткой под вертикальными */
+.grid.grid-h{grid-template-columns:1fr}
+@media(min-width:768px){.grid.grid-h{grid-template-columns:repeat(2,1fr)}}
+.grid + .grid{margin-top:12px}
+@media(min-width:640px){.grid + .grid{margin-top:24px}}
+.card.h{aspect-ratio:16/9}
+/* Нестандартные форматы: те же колонки и та же ширина карточки, что у основной сетки,
+   высота — по пропорциям видео (--r), карточки укладываются столбиками без дыр */
+.grid-free{column-count:2;column-gap:12px}
+@media(min-width:640px){.grid-free{column-gap:24px}}
+@media(min-width:1024px){.grid-free{column-count:3}}
+@media(min-width:1280px){.grid-free{column-count:4}}
+.grid-free .card{aspect-ratio:var(--r);width:100%;break-inside:avoid;margin-bottom:12px}
+@media(min-width:640px){.grid-free .card{margin-bottom:24px}}
+.grid-free .ph{padding-bottom:18%}
+.grid + .grid-free,.grid-free + .grid{margin-top:12px}
+@media(min-width:640px){.grid + .grid-free,.grid-free + .grid{margin-top:24px}}
+.card.h .ph{padding-bottom:12%}
+.card{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--panel);border:1px solid rgba(196,181,253,.1);transition:border-color .3s,box-shadow .3s,opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1);user-select:none;-webkit-user-select:none}
+@media(min-width:640px){.card{border-radius:16px}}
+.card.hidden-in{opacity:0;transform:translateY(60px) scale(.95)}
+.card:hover{border-color:rgba(196,181,253,.35);box-shadow:0 0 42px rgba(168,85,247,.13)}
+.media{position:absolute;inset:0;background:#09090b}
+.media video,.media img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease-out}
+.card:hover .media video,.card:hover .media img{transform:scale(1.05)}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:30%;transition:transform .7s ease-out}
+.card:hover .ph{transform:scale(1.05)}
+.ph::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:24px 24px}
+.ph b{position:relative;z-index:1;font-family:var(--f-display);font-weight:400;font-size:clamp(22px,2.8vw,32px);text-transform:uppercase;letter-spacing:.02em;color:rgba(255,255,255,.85);text-align:center;padding:0 12px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to top,#000 0%,rgba(0,0,0,.2) 50%,transparent 100%)}
+.play-c{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.play-c div{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(12px);border:1px solid rgba(196,181,253,.2);transition:opacity .3s,transform .3s}
+@media(min-width:640px){.play-c div{width:64px;height:64px}}
+.card.playing .play-c div{opacity:0;transform:scale(.6)}
+.hover-o{position:absolute;inset:0;z-index:4;display:none;align-items:center;justify-content:center;background:rgba(6,3,12,.35);backdrop-filter:blur(2px);opacity:0;transition:opacity .3s;pointer-events:none}
+.hover-o div{padding:16px;border-radius:50%;background:var(--cyan-200);color:var(--bg);box-shadow:0 0 30px rgba(168,85,247,.35);transform:scale(.9);transition:transform .3s}
+@media(min-width:640px) and (hover:hover){.hover-o{display:flex}.card:not(.playing):hover .hover-o{opacity:1}.card:hover .hover-o div{transform:scale(1)}}
+.top-row{position:absolute;top:8px;left:8px;right:8px;z-index:6;display:flex;align-items:center;justify-content:space-between;height:28px;pointer-events:none}
+@media(min-width:640px){.top-row{top:16px;left:16px;right:16px;height:32px}}
+.views{padding:4px 10px;border-radius:999px;background:rgba(6,3,12,.85);backdrop-filter:blur(12px);font-family:var(--f-mono);font-size:9px;letter-spacing:.025em;text-transform:uppercase;border:1px solid rgba(196,181,253,.15);white-space:nowrap}
+@media(min-width:640px){.views{font-size:10px;padding:6px 12px}}
+.mute{margin-left:auto;pointer-events:auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid rgba(196,181,253,.15);color:var(--cyan-300);opacity:0;transform:scale(.75);transition:all .3s}
+.card.playing .mute{opacity:1;transform:none}
+.bottom{position:absolute;bottom:0;left:0;right:0;z-index:5;padding:12px;pointer-events:none}
+@media(min-width:640px){.bottom{padding:20px}}
+.tag{display:inline-flex;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid rgba(196,181,253,.2);font-family:var(--f-mono);font-weight:600;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-300)}
+@media(min-width:640px){.tag{font-size:10px;padding:6px 12px}}
+.ctrl{position:relative;height:0;opacity:0;overflow:hidden;transition:all .3s;pointer-events:none}
+.card.active .ctrl{height:40px;opacity:1;margin-top:8px;pointer-events:auto;overflow:visible}
+.time{position:absolute;right:0;bottom:22px;padding:2px 6px;border-radius:4px;background:rgba(26,28,35,.9);border:1px solid rgba(255,255,255,.1);font-family:var(--f-mono);font-size:8px;font-weight:700;letter-spacing:.1em;line-height:1.3}
+@media(min-width:640px){.time{font-size:10px}}
+.bar{position:absolute;left:0;right:0;bottom:0;height:16px;display:flex;align-items:center}
+.bar input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer;z-index:2}
+.bar .track{position:absolute;left:0;right:0;height:3px;border-radius:9px;background:rgba(255,255,255,.2)}
+.bar .fill{position:absolute;left:0;height:3px;border-radius:9px;background:var(--cyan);width:0}
+.bar .fill::after{content:"";position:absolute;right:-5px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(168,85,247,.9)}
+.more-wrap{margin-top:48px;display:flex;justify-content:center}
+.btn-more{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;background:var(--panel);border:1px solid rgba(196,181,253,.2);box-shadow:0 0 20px rgba(168,85,247,.05);transition:all .3s}
+.btn-more:hover{border-color:rgba(196,181,253,.5);background:var(--panel-hover);box-shadow:0 0 30px rgba(168,85,247,.1)}
+.btn-more span{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan-300)}
+.btn-more svg{color:var(--cyan-300);transition:transform .3s}
+.btn-more.open svg{transform:rotate(180deg)}
+
+/* ---------- FAQ ---------- */
+#faq{position:relative;z-index:10;max-width:896px;margin:0 auto;padding:80px 16px 0}
+@media(min-width:640px){#faq{padding:112px 24px 0}}
+#faq h2{font-family:var(--f-display);font-weight:400;font-size:48px;line-height:1;letter-spacing:.02em;text-align:center;margin-bottom:32px;background:linear-gradient(90deg,#c4b5fd,#a855f7 50%,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(min-width:640px){#faq h2{font-size:64px;margin-bottom:40px}}
+.faq-list{display:flex;flex-direction:column;gap:12px}
+.faq-item{border-radius:20px;background:rgba(17,10,30,.6);border:1px solid rgba(196,181,253,.12);backdrop-filter:blur(12px);transition:border-color .3s,background .3s}
+.faq-item:hover{border-color:rgba(196,181,253,.28)}
+.faq-item.open{border-color:rgba(168,85,247,.45);background:rgba(28,16,48,.7)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;text-align:left;font-size:16px;font-weight:700;color:#f5f3ff}
+@media(min-width:640px){.faq-q{font-size:18px;padding:22px 26px}}
+.faq-ic{position:relative;flex:none;width:32px;height:32px;border-radius:50%;background:rgba(168,85,247,.12);border:1px solid rgba(196,181,253,.25);transition:background .3s,transform .4s cubic-bezier(.3,1.4,.5,1)}
+.faq-ic::before,.faq-ic::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;margin:-1px 0 0 -6px;border-radius:2px;background:var(--cyan-300);transition:transform .4s}
+.faq-ic::after{transform:rotate(90deg)}
+.faq-item.open .faq-ic{background:var(--green);transform:rotate(180deg)}
+.faq-item.open .faq-ic::before,.faq-item.open .faq-ic::after{background:#fff}
+.faq-item.open .faq-ic::after{transform:rotate(0)}
+/* Плавное раскрытие через grid-template-rows: 0fr → 1fr */
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+.faq-a > div{overflow:hidden}
+.faq-a p{padding:0 22px 22px;font-size:15px;line-height:1.7;font-weight:400;color:var(--muted)}
+@media(min-width:640px){.faq-a p{padding:0 26px 24px 26px;max-width:720px}}
+
+/* ---------- Contact ---------- */
+#contact{position:relative;z-index:10;max-width:896px;margin:0 auto;padding:96px 16px;text-align:center;border-top:1px solid var(--line)}
+@media(min-width:640px){#contact{padding:128px 24px}}
+.dash{width:48px;height:2px;margin:0 auto 32px;background:linear-gradient(90deg,var(--cyan-300),var(--sky-300),var(--lime-300));box-shadow:0 0 18px rgba(168,85,247,.5)}
+#contact h2{font-family:var(--f-display);font-weight:400;font-size:48px;line-height:.92;letter-spacing:.005em;text-transform:uppercase;color:#f5f3ff}
+@media(min-width:640px){#contact h2{font-size:76px}}
+@media(min-width:1024px){#contact h2{font-size:92px}}
+#contact .sub{margin:24px auto 0;font-size:16px;font-weight:300;line-height:1.65;color:var(--muted);max-width:672px}
+@media(min-width:640px){#contact .sub{font-size:18px}}
+/* Карточка профиля: бегущий свет по рамке, мягкое парение, блик при наведении */
+@property --ring-angle{syntax:"<angle>";inherits:false;initial-value:0deg}
+/* Ряд контактов: «Обо мне» + карточка Telegram (на телефоне — друг под другом) */
+.contact-row{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:20px}
+@media(min-width:768px){.contact-row{flex-direction:row;align-items:stretch;justify-content:center}}
+.about{position:relative;width:100%;max-width:449px;padding:24px 20px 20px;border-radius:30px;background:radial-gradient(120% 60% at 0% 0%,rgba(168,85,247,.16),transparent 60%),var(--panel);box-shadow:0 10px 25px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:16px;text-align:left;animation:pcFloat 6s ease-in-out infinite;animation-delay:-3s}
+/* Градиентная рамка */
+.about::before{content:"";position:absolute;inset:0;border-radius:30px;padding:1px;pointer-events:none;background:linear-gradient(160deg,rgba(196,181,253,.45),rgba(168,85,247,.12) 40%,rgba(240,171,252,.3));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@media(min-width:768px){.about{width:340px;flex:none}}
+.about-head{display:flex;align-items:center;gap:16px}
+.about-id{display:flex;flex-direction:column;min-width:0}
+.about-role{font-size:13px;font-weight:600;color:var(--muted);margin-top:4px}
+.about-facts > div{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:rgba(6,3,12,.55);border:1px solid rgba(196,181,253,.12);transition:border-color .3s,background .3s}
+.about-facts > div:hover{border-color:rgba(196,181,253,.35);background:rgba(168,85,247,.08)}
+.about-facts svg{color:var(--cyan-300);flex:none}
+.about-facts p{display:flex;flex-direction:column}
+.about-facts b{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1;color:#fff;letter-spacing:.02em;white-space:nowrap}
+.about-facts span{font-size:11px;font-weight:600;color:var(--muted);margin-top:4px;white-space:nowrap}
+/* «Яма» с навыками. Без физики (скрипт не загрузился) плашки просто лежат в ряд */
+.pit{position:relative;width:100%;height:220px;border-radius:20px;overflow:hidden;background:radial-gradient(90% 70% at 50% 100%,rgba(168,85,247,.22),transparent 70%),radial-gradient(rgba(196,181,253,.12) 1px,transparent 1px) 0 0/14px 14px,rgba(6,3,12,.55);box-shadow:inset 0 2px 12px rgba(0,0,0,.5);border:1px solid rgba(196,181,253,.1);display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:6px;padding:10px}
+.pit.live{display:block;padding:0;cursor:grab}
+.pit.live:active{cursor:grabbing}
+.skill{display:inline-block;padding:7px 13px;border-radius:999px;font-size:12px;box-shadow:0 4px 10px -4px rgba(0,0,0,.6);font-weight:700;line-height:1;white-space:nowrap;user-select:none;-webkit-user-select:none}
+.pit.live .skill{position:absolute;left:0;top:0;will-change:transform;visibility:hidden}
+.skill.c0{background:var(--green);color:#fff}
+.skill.c1{background:#f0abfc;color:#2e0530}
+.skill.c2{background:rgba(168,85,247,.18);color:#e9d5ff;border:1px solid rgba(196,181,253,.35)}
+.skill.c3{background:#c4b5fd;color:#1e0b2e}
+.skill.c4{background:#c026d3;color:#fff}
+.about-photo{position:relative;flex:none;width:88px;height:88px;border-radius:50%;padding:3px;background:conic-gradient(from var(--ring-angle),#c4b5fd,#a855f7,#f0abfc,#c4b5fd);box-shadow:0 10px 30px -8px rgba(168,85,247,.6);animation:pcRing 6s linear infinite}
+.about-photo img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 22%;border:3px solid var(--panel)}
+.about-photo i{position:absolute;right:3px;bottom:5px;width:16px;height:16px;border-radius:50%;background:var(--green);border:3px solid var(--panel)}
+.about-photo i::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--cyan);animation:dotPing 2s ease-out infinite}
+@keyframes dotPing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+.about-lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(165,155,189,.85)}
+.about-name{font-family:var(--f-display);font-size:60px;line-height:.9;margin-top:2px;letter-spacing:.02em;text-transform:uppercase;background:linear-gradient(90deg,#c4b5fd,#a855f7 50%,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pcard{display:block;position:relative;width:100%;max-width:449px;animation:pcFloat 6s ease-in-out infinite}
+@media(min-width:768px){.contact-row .pcard{flex:1;display:flex}.contact-row .pc-body{flex:1;display:flex;flex-direction:column;justify-content:center}}
+@keyframes pcFloat{50%{transform:translateY(-8px)}}
+.pcard .halo{position:absolute;inset:6%;z-index:-1;border-radius:40px;background:radial-gradient(closest-side,rgba(139,92,246,.45),rgba(217,70,239,.15),transparent);filter:blur(40px);animation:pcHalo 6s ease-in-out infinite;transition:opacity .4s}
+@keyframes pcHalo{0%,100%{opacity:.45;transform:scale(.96)}50%{opacity:.8;transform:scale(1.04)}}
+.pcard:hover .halo{opacity:1}
+.pc-body{position:relative;padding:28px}
+@media(min-width:640px){.pc-body{padding:36px}}
+.pc-ring{position:absolute;inset:0;z-index:1;border-radius:30px;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--ring-angle),transparent 0deg,transparent 220deg,#a855f7 290deg,#f0abfc 330deg,transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:pcRing 5s linear infinite}
+@keyframes pcRing{to{--ring-angle:360deg}}
+.pcard:hover .pc-ring{animation-duration:2s}
+.pc-bg{position:absolute;inset:0;border-radius:30px;background:var(--panel);border:1px solid rgba(139,92,246,.2);overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.3)}
+.pc-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(139,92,246,.12),transparent 60%)}
+.pc-bg .shine{position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.07) 45%,rgba(240,171,252,.12) 50%,transparent);transform:skewX(-18deg);transition:left 0s}
+.pcard:hover .pc-bg .shine{left:130%;transition:left .9s ease}
+.pc-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.pc-icon{position:relative;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#6d28d9,#c026d3);box-shadow:0 10px 30px -8px rgba(168,85,247,.6)}
+.pc-icon svg{transform:translate(-1px,1px)}
+.pc-icon::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--cyan);animation:iconPing 2.4s ease-out infinite}
+@keyframes iconPing{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+.pc-text{font-size:17px;font-weight:500;line-height:1.5;color:#e9e4f5;max-width:300px}
+.pc-handle{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--cyan-300);padding:4px 12px;border-radius:999px;background:rgba(168,85,247,.1);border:1px solid rgba(196,181,253,.2)}
+.pc-btn{width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 24px;border-radius:15px;background:var(--green);color:#fff;font-family:var(--f-sans);font-weight:700;font-size:17px;transition:all .3s}
+@media(max-width:639px){.pc-btn{padding:16px;font-size:16px;white-space:nowrap}}
+.pcard:hover .pc-btn{background:#8b5cf6}
+.pc-btn:hover{transform:translateY(-4px);box-shadow:0 15px 30px -10px rgba(139,92,246,.6)}
+.pc-btn .arr{transition:transform .3s}
+.pc-btn:hover .arr{transform:translateX(4px)}
+
+.channels{margin-top:56px;padding-top:48px;border-top:1px solid rgba(196,181,253,.1);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:24px}
+@media(min-width:640px){.channels{flex-direction:row}}
+.channels .lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--zinc-600)}
+.ch-left{display:flex;flex-direction:column;align-items:center}
+@media(min-width:640px){.ch-left{align-items:flex-start}}
+.ch-links{display:flex;align-items:center;gap:16px;margin-top:8px}
+.ch-links a{display:flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:12px;color:var(--zinc-400);transition:color .2s}
+.ch-links a:hover{color:#fff}
+.ch-links .sl{color:var(--zinc-800)}
+.to-top{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid rgba(196,181,253,.1);font-family:var(--f-mono);font-size:12px;color:var(--zinc-500);transition:all .2s}
+.to-top:hover{background:var(--panel-hover);color:var(--cyan-200)}
+footer{position:relative;z-index:10;border-top:1px solid var(--line);padding:32px 0}
+footer .wrap{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:16px;text-align:center}
+@media(min-width:640px){footer .wrap{flex-direction:row;text-align:left}}
+footer .fb{font-family:var(--f-display);font-weight:400;font-size:22px;letter-spacing:.05em;color:var(--zinc-600)}
+footer p{font-family:var(--f-mono);font-size:12px;color:var(--zinc-600)}
+
+/* ---------- Появление при скролле ---------- */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.card.hidden-in{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="top" style="position:relative;min-height:100vh;overflow-x:hidden">
+
+  <!-- Космический фон -->
+  <div class="bg" aria-hidden="true">
+    <div class="stars s1" id="st1"></div>
+    <div class="stars s2" id="st2"></div>
+    <div class="stars s3" id="st3"></div>
+    <div class="grid-wrap"><div class="grid-floor"></div></div>
+    <div class="nebula" style="top:-15%;left:-10%;width:50vw;height:50vw;background:rgba(109,40,217,.32);filter:blur(120px)"></div>
+    <div class="nebula" style="bottom:-20%;right:-10%;width:60vw;height:60vw;background:rgba(192,38,211,.2);filter:blur(150px);animation-delay:-3s;animation-duration:12s"></div>
+    <div class="nebula" style="top:30%;left:30%;width:40vw;height:40vw;background:rgba(88,28,135,.25);filter:blur(120px);animation-delay:-5s;animation-duration:15s"></div>
+    <div class="nebula" style="top:60%;left:-10%;width:45vw;height:45vw;background:rgba(67,56,202,.18);filter:blur(130px);animation-delay:-7s;animation-duration:10s"></div>
+    <div class="vignette"></div>
+    <div class="beam" style="left:20%;width:10vw;transform:rotate(-35deg);background:linear-gradient(to bottom,transparent,rgba(168,85,247,.1),transparent)"></div>
+    <div class="beam" style="right:30%;width:15vw;transform:rotate(35deg);background:linear-gradient(to bottom,transparent,rgba(232,121,249,.1),transparent);animation-delay:-2s"></div>
+  </div>
+
+  <header>
+    <div class="wrap nav">
+      <a href="#top" class="logo"><span data-bind="brand"></span><i></i></a>
+      <div class="nav-right">
+        <div class="lang" id="lang">
+          <div class="pill"></div>
+          <button data-lang="ru">RU</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <a href="#contact" class="btn-cta-sm"><span data-i18n="navCta"></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap hero">
+    <h1 class="reveal"><span class="line" data-i18n="heroA"></span><span class="line"><span class="grad-text" data-i18n="heroB"></span></span></h1>
+    <p class="lead reveal" data-i18n="heroLead"></p>
+    <div class="hero-btns reveal">
+      <a href="#works" class="btn btn-primary"><span data-i18n="btnWorks"></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a href="#contact" class="btn btn-ghost"><span data-i18n="btnStart"></span></a>
+    </div>
+    <div class="stats reveal" id="stats"></div>
+  </section>
+
+  <div class="works-zone">
+    <div class="glow" style="top:5%;left:-15%;width:40vw;height:40vw;min-width:500px;min-height:500px;background:rgba(124,58,237,.08);filter:blur(140px)"></div>
+    <div class="glow" style="top:40%;right:-10%;width:45vw;height:45vw;min-width:600px;min-height:600px;background:rgba(192,38,211,.05);filter:blur(160px)"></div>
+    <div class="glow" style="bottom:10%;left:15%;width:50vw;height:30vw;min-width:600px;min-height:400px;background:rgba(147,51,234,.05);filter:blur(160px)"></div>
+
+    <section id="works" class="wrap">
+      <div style="position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;z-index:-1;overflow:hidden;pointer-events:none">
+        <canvas id="particles"></canvas>
+        <div class="fade-top"></div><div class="fade-bot"></div>
+      </div>
+      <div class="works-head">
+        <h2 data-i18n="worksTitle"></h2>
+        <div class="tabs" id="tabs"><div class="pill"></div></div>
+      </div>
+      <div id="grid"></div>
+      <div class="more-wrap" id="moreWrap">
+        <button class="btn-more" id="moreBtn"><span data-i18n="showMore"></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      </div>
+    </section>
+  </div>
+
+  <section id="faq">
+    <h2 class="reveal">FAQ</h2>
+    <div class="faq-list reveal" id="faqList"></div>
+  </section>
+
+  <section id="contact">
+    <div class="dash"></div>
+    <h2 class="reveal" data-i18n="ctaTitle"></h2>
+    <p class="sub reveal" data-i18n="ctaSub"></p>
+
+    <div class="contact-row reveal">
+      <div class="about">
+        <div class="about-head">
+          <div class="about-photo"><img src="photo.webp" alt="" width="88" height="88"><i></i></div>
+          <div class="about-id">
+            <span class="about-lbl" data-i18n="aboutLbl"></span>
+            <p class="about-name" data-i18n="aboutName"></p>
+            <span class="about-role" data-i18n="aboutRole"></span>
+          </div>
+        </div>
+        <div class="about-facts">
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <p><b data-i18n="aboutCity"></b><span data-i18n="aboutCityL"></span></p>
+          </div>
+        </div>
+        <!-- Навыки: плашки падают сверху и складываются в кучу (физика Matter.js) -->
+        <div class="pit" id="pit"></div>
+      </div>
+      <a class="pcard" id="pcard" target="_blank" rel="noopener noreferrer">
+        <div class="halo"></div>
+        <div class="pc-body">
+          <div class="pc-ring"></div>
+          <div class="pc-bg"><div class="shine"></div></div>
+          <div class="pc-content">
+            <div class="pc-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+            </div>
+            <p class="pc-text" data-i18n="cardText"></p>
+            <span class="pc-handle" id="tgHandle"></span>
+            <div class="pc-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+              <span data-i18n="profileBtn"></span>
+              <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="channels">
+      <div class="ch-left">
+        <span class="lbl" data-i18n="channels"></span>
+        <div class="ch-links">
+          <a id="tgLink" target="_blank" rel="noreferrer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Telegram</span></a>
+          <span class="sl">/</span>
+          <a id="igLink" target="_blank" rel="noreferrer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg><span>Instagram</span></a>
+        </div>
+      </div>
+      <a href="#top" class="to-top"><span data-i18n="top"></span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7M12 19V5"/></svg></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span class="fb" data-bind="brand"></span>
+      <p>© <span id="year"></span> <span data-bind="brand"></span>. <span data-i18n="rights"></span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+/* =====================================================================
+   НАСТРОЙКИ САЙТА — меняйте только этот блок
+   ===================================================================== */
+const SITE = {
+  brand: "TWIXSA",             // логотип в шапке и подвале
+  telegram: "twixsa04",     // без @ — используется в карточке контактов и в подвале
+  instagram: "twixsacore",
+  defaultLang: "ru",
+  initialCards: 8,                // сколько работ показывать до «Показать ещё»
+
+  stats: [
+    { icon: "award", color: "#67e8f9", key: "stat1" , num: "1M+" },
+    { icon: "trend", color: "#bef264", key: "stat2" , num: "300+" },
+    { icon: "clock", color: "#e879f9", key: "stat3" , num: { ru: "2 дня", en: "2 days" } }, // num может быть строкой или {ru, en}
+  ],
+
+  // Категории фильтра (id используется в работах ниже, подписи — в TEXT.cats)
+  categories: ["all", "reels", "ai", "horizontal", "clips"],
+
+  // Работы. video — ссылка на .mp4 (например Cloudinary), poster — картинка-обложка.
+  // Пока ссылок нет, показывается цветная заглушка с названием.
+  // format: "v" — вертикальная карточка 9:16, "h" — горизонтальная 16:9.
+  // Если не указан: категория horizontal — "h", остальные — "v".
+  // ratio: ширина / высота видео (например 768 / 1080) — для нестандартных форматов.
+  // Такие карточки той же ширины, что и остальные, а высота — по пропорциям видео.
+  projects: [
+    { title: "Рилс 1",        cat: "reels",      views: "",     video: "videos/reels-1.mp4", poster: "videos/reels-1.jpg" },
+    { title: "ИИ-ролик 1",    cat: "ai",         views: "",     video: "videos/ai-1.mp4", poster: "videos/ai-1.jpg" },
+    { title: "Сниппет 1",     cat: "clips",      views: "",     video: "videos/snippet-1.mp4", poster: "videos/snippet-1.jpg", ratio: 768 / 1080 },
+    { title: "Рилс 2",        cat: "reels",      views: "",     video: "videos/reels-2.mp4", poster: "videos/reels-2.jpg" },
+    { title: "ИИ-ролик 2",    cat: "ai",         views: "",     video: "videos/ai-2.mp4", poster: "videos/ai-2.jpg" },
+    { title: "Сниппет 2",     cat: "clips",      views: "",     video: "videos/snippet-2.mp4", poster: "videos/snippet-2.jpg", ratio: 1180 / 900 },
+    { title: "Рилс 3",        cat: "reels",      views: "",     video: "videos/reels-3.mp4", poster: "videos/reels-3.jpg" },
+    { title: "Рилс 4",        cat: "reels",      views: "",     video: "videos/reels-4.mp4", poster: "videos/reels-4.jpg" },
+    { title: "Рилс 5",        cat: "reels",      views: "",     video: "videos/reels-5.mp4", poster: "videos/reels-5.jpg" },
+    { title: "Горизонталь 1", cat: "horizontal", views: "",     video: "videos/horizontal-1.mp4", poster: "videos/horizontal-1.jpg" },
+    { title: "Горизонталь 2", cat: "horizontal", views: "",     video: "videos/horizontal-2.mp4", poster: "videos/horizontal-2.jpg" },
+    { title: "ИИ-ролик 3",    cat: "ai",         views: "",      video: "videos/ai-3.mp4", poster: "videos/ai-3.jpg" },
+    { title: "ИИ-ролик 4",    cat: "ai",         views: "",     video: "videos/ai-4.mp4", poster: "videos/ai-4.jpg" },
+    { title: "ИИ-ролик 5",    cat: "ai",         views: "",     video: "videos/ai-5.mp4", poster: "videos/ai-5.jpg", format: "h" },
+    { title: "Сниппет 3",     cat: "clips",      views: "",     video: "videos/snippet-3.mp4", poster: "videos/snippet-3.jpg", ratio: 16 / 9 },
+    { title: "Горизонталь 3", cat: "horizontal", views: "",     video: "videos/horizontal-3.mp4", poster: "videos/horizontal-3.jpg" },
+    { title: "Горизонталь 4", cat: "horizontal", views: "",     video: "videos/horizontal-4.mp4", poster: "videos/horizontal-4.jpg" },
+  ],
+};
+
+const TEXT = {
+  ru: {
+    navCta: "Обсудить проект",
+    heroA: "У вас секунда, чтобы зацепить?",       //   — неразрывный пробел после короткого слова
+    heroB: "Я знаю, что с ней делать.",
+    heroLead: "Монтирую вертикальные и горизонтальные видео, создаю AI-ролики. Продумываю структуру, темп, звук и графику под вашу задачу и стиль.",
+    btnWorks: "Смотреть работы",
+    btnStart: "Начать проект",
+    stat1: ["Рекорд просмотров", "На одном ролике"],
+    stat2: ["Смонтировано", "Вертикальных видео"],
+    stat3: ["Скорость", "Средний срок сдачи рилса"],
+    worksTitle: "Лучшие работы",
+    cats: { all: "Все работы", reels: "Рилсы", ai: "ИИ-ролики", horizontal: "Горизонтальный контент", clips: "Сниппеты / клипы" },
+    views: "просм.",
+    showMore: "Показать ещё",
+    showLess: "Свернуть",
+    faq: [
+      ["Сколько стоит монтаж?", "Цена зависит от длительности видео, объёма исходников и сложности монтажа. Пришлите материал и пример того, что вам нравится, и я рассчитаю стоимость."],
+      ["Можно ли внести правки?", "Да. Количество правок и порядок их внесения обсуждаем до начала работы. Замечания удобнее собирать одним списком, чтобы ничего не потерялось."],
+      ["Сколько времени занимает монтаж?", "Зависит от формата, сложности и количества видео. Точный срок согласуем до начала работы. Если проект срочный, сразу напишите, к какой дате он нужен."],
+      ["Можно ли создать AI-ролик без съёмок и готовых исходников?", "Да, достаточно идеи или описания задачи. Я создам изображения, анимирую их и соберу в готовый ролик с монтажом и звуком. Стиль и сценарий согласуем заранее."],
+    ],
+    ctaTitle: "Обсудим ваше видео?",
+    ctaSub: "Без воды и скучных склеек. Динамичный сторителлинг, который держит зрителя с первого кадра.",
+    cardText: "Для обсуждения проекта пишите в Telegram",
+    aboutLbl: "Обо мне",
+    aboutName: "Юля",
+    aboutRole: "Видеомонтажёр",
+    aboutCity: "Краснодар", aboutCityL: "Россия",
+    skills: ["Motion", "VFX", "Рилсы", "SMM", "AI-ролики", "Клипы", "Сниппеты", "Цветокор", "Саунд-дизайн", "Субтитры", "After Effects", "Premiere Pro"],
+    profileBtn: "Написать в Telegram",
+    channels: "Связаться напрямую",
+    top: "Наверх",
+    rights: "Все права защищены.",
+  },
+  en: {
+    navCta: "Let's Create",
+    heroA: "You get one second to hook them?",
+    heroB: "I know what to do with it.",
+    heroLead: "I edit vertical and horizontal videos and create AI videos. I shape the structure, pacing, sound and graphics around your goals and style.",
+    btnWorks: "Explore Portfolio",
+    btnStart: "Start Project",
+    stat1: ["Record Views", "On a single reel"],
+    stat2: ["Edited and delivered", "Vertical videos"],
+    stat3: ["Turnaround", "Average reel delivery time"],
+    worksTitle: "Flagship Cases",
+    cats: { all: "All Edits", reels: "Reels", ai: "AI Videos", horizontal: "Horizontal", clips: "Snippets / Clips" },
+    views: "views",
+    showMore: "Show More",
+    showLess: "Show Less",
+    faq: [
+      ["How much does editing cost?", "The price depends on the video length, the amount of footage and the complexity of the edit. Send me your material and an example of what you like, and I'll give you a quote."],
+      ["Can I ask for revisions?", "Yes. We agree on the number of revisions and how they're handled before the work starts. It's easiest to collect your notes in one list so nothing gets lost."],
+      ["How long does editing take?", "It depends on the format, complexity and number of videos. We agree on the exact deadline before starting. If the project is urgent, tell me the date you need it by right away."],
+      ["Can you make an AI video without any filming or footage?", "Yes, an idea or a description of the task is enough. I'll generate the images, animate them and put together a finished video with editing and sound. We agree on the style and script in advance."],
+    ],
+    ctaTitle: "Shall we talk about your video?",
+    ctaSub: "No filler, no boring cuts. Just dynamic micro-storytelling engineered to keep your audience hooked from frame one.",
+    cardText: "To discuss your project, message me on Telegram",
+    aboutLbl: "About me",
+    aboutName: "Yulia",
+    aboutRole: "Video editor",
+    aboutCity: "Krasnodar", aboutCityL: "Russia",
+    skills: ["Motion", "VFX", "Reels", "SMM", "AI videos", "Music videos", "Snippets", "Color grading", "Sound design", "Subtitles", "After Effects", "Premiere Pro"],
+    profileBtn: "Message me on Telegram",
+    channels: "Direct Channels",
+    top: "Top",
+    rights: "All rights reserved.",
+  },
+};
+/* ===================================================================== */
+
+const ICONS = {
+  award: '<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>',
+  trend: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  spark: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4"/>',
+};
+const svg = (inner, s = 14, extra = '') => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${inner}</svg>`;
+const PLAY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.87l12-7.5a1 1 0 0 0 0-1.74l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>';
+const VOL_OFF = svg('<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/>');
+const VOL_ON = svg('<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>');
+const PH_GRADS = [
+  ["#4c1d95", "#0a0612"], ["#701a75", "#120a24"], ["#312e81", "#0a0612"], ["#581c87", "#1e0b2e"],
+  ["#86198f", "#0d0818"], ["#3b0764", "#0a0612"], ["#4338ca", "#2e0530"], ["#6b21a8", "#0f0a1a"],
+];
+
+let lang = SITE.defaultLang;
+let filter = "all";
+let expanded = false;
+const t = k => TEXT[lang][k];
+
+/* ---------- Статичные данные ---------- */
+document.querySelectorAll('[data-bind]').forEach(el => {
+  const k = el.dataset.bind;
+  el.textContent = SITE[k];
+});
+document.getElementById('year').textContent = new Date().getFullYear();
+const tgUrl = 'https://t.me/' + SITE.telegram;
+document.getElementById('tgLink').href = tgUrl;
+document.getElementById('igLink').href = 'https://instagram.com/' + SITE.instagram;
+document.getElementById('pcard').href = tgUrl;
+document.getElementById('tgHandle').textContent = '@' + SITE.telegram;
+
+/* ---------- Звёзды ---------- */
+function starField(id, n, color) {
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const x = Math.floor(Math.random() * 100), y = Math.floor(Math.random() * 100);
+    pts.push(`${color} ${x}vw ${y}vh`, `${color} ${x}vw ${y + 100}vh`); // дубль ниже — бесшовная прокрутка
+  }
+  document.getElementById(id).style.boxShadow = pts.join(',');
+}
+starField('st1', 100, 'rgba(255,255,255,.4)');
+starField('st2', 50, 'rgba(168,85,247,.6)');
+starField('st3', 20, 'rgba(217,70,239,.8)');
+
+/* ---------- Переключатели с «пилюлей» ---------- */
+function movePill(container) {
+  const on = container.querySelector('button.on'), pill = container.querySelector('.pill');
+  if (!on || !pill) return;
+  pill.style.left = on.offsetLeft + 'px';
+  pill.style.width = on.offsetWidth + 'px';
+}
+
+/* ---------- Язык ---------- */
+const langBox = document.getElementById('lang');
+langBox.querySelectorAll('button').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+  movePill(langBox);
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  renderStats();
+  renderTabs();
+  renderGrid(false);
+  skillsPile.rebuild();
+  renderFaq();
+}
+
+/* ---------- FAQ: аккордеон, открыт один вопрос за раз ---------- */
+function renderFaq() {
+  const list = document.getElementById('faqList');
+  const opened = [...list.children].findIndex(el => el.classList.contains('open'));
+  list.innerHTML = t('faq').map(([q, a], i) => `
+    <div class="faq-item${i === opened ? ' open' : ''}">
+      <button class="faq-q" aria-expanded="${i === opened}"><span>${q}</span><i class="faq-ic"></i></button>
+      <div class="faq-a"><div><p>${a}</p></div></div>
+    </div>`).join('');
+  list.querySelectorAll('.faq-q').forEach(btn => btn.onclick = () => {
+    const item = btn.parentElement, isOpen = item.classList.contains('open');
+    list.querySelectorAll('.faq-item').forEach(el => { el.classList.remove('open'); el.firstElementChild.setAttribute('aria-expanded', 'false'); });
+    if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+  });
+}
+
+function renderStats() {
+  document.getElementById('stats').innerHTML = SITE.stats.map(s => `
+    <div class="stat">
+      <div class="stat-head"><span style="color:${s.color}">${svg(ICONS[s.icon], 14, `style="color:${s.color}"`)}</span><span>${t(s.key)[0]}</span></div>
+      <p class="stat-num">${typeof s.num === 'object' ? s.num[lang] : s.num}</p>
+      <p class="stat-sub">${t(s.key)[1]}</p>
+    </div>`).join('');
+}
+
+/* ---------- Фильтр ---------- */
+const tabs = document.getElementById('tabs');
+function renderTabs() {
+  tabs.querySelectorAll('button').forEach(b => b.remove());
+  SITE.categories.forEach(c => {
+    const b = document.createElement('button');
+    b.textContent = t('cats')[c];
+    b.classList.toggle('on', c === filter);
+    b.onclick = () => { filter = c; expanded = false; renderTabs(); renderGrid(true); };
+    tabs.appendChild(b);
+  });
+  requestAnimationFrame(() => movePill(tabs));
+}
+
+/* ---------- Карточки ---------- */
+const grid = document.getElementById('grid');
+const fmt = s => isFinite(s) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00';
+
+function cardHTML(p, i) {
+  const [g1, g2] = PH_GRADS[i % PH_GRADS.length];
+  const media = p.video
+    ? `<video src="${p.video}" ${p.poster ? `poster="${p.poster}"` : ''} playsinline loop muted preload="metadata"></video>`
+    : p.poster ? `<img src="${p.poster}" alt="${p.title}" loading="lazy">`
+    : `<div class="ph" style="background:linear-gradient(160deg,${g1},${g2})"><b>${p.title}</b></div>`;
+  return `
+    <div class="top-row">
+      ${p.views ? `<span class="views">${p.views} ${t('views')}</span>` : ''}
+      ${p.video ? `<button class="mute" aria-label="Звук">${VOL_OFF}</button>` : ''}
+    </div>
+    <div class="media">${media}<div class="play-c"><div>${PLAY}</div></div></div>
+    <div class="shade"></div>
+    <div class="bottom">
+      <span class="tag">${t('cats')[p.cat] || p.cat}</span>
+      ${p.video ? `<div class="ctrl"><span class="time">0:00 / 0:00</span>
+        <div class="bar"><div class="track"></div><div class="fill"></div><input type="range" min="0" max="100" step="0.1" value="0"></div></div>` : ''}
+    </div>
+    <div class="hover-o"><div>${PLAY}</div></div>`;
+}
+
+let io;
+function renderGrid(animate) {
+  grid.querySelectorAll('video').forEach(v => v.pause());
+  const list = SITE.projects.filter(p => filter === 'all' || p.cat === filter);
+  const shown = expanded ? list : list.slice(0, SITE.initialCards);
+  const kind = p => p.ratio ? 'free' : (p.format || (p.cat === 'horizontal' ? 'h' : 'v'));
+  grid.innerHTML = '';
+  // Вертикальные (сетка 9:16), под ними горизонтальные (16:9), затем нестандартные форматы «плиткой»
+  [['v', 'grid'], ['h', 'grid grid-h'], ['free', 'grid-free']].forEach(([k, cls]) => {
+    const group = shown.filter(p => kind(p) === k);
+    if (!group.length) return;
+    const g = document.createElement('div');
+    g.className = cls;
+    grid.appendChild(g);
+    group.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'card' + (k === 'h' ? ' h' : '') + (animate ? ' hidden-in' : '');
+      if (p.ratio) el.style.setProperty('--r', p.ratio);
+      el.innerHTML = cardHTML(p, SITE.projects.indexOf(p));
+      g.appendChild(el);
+      if (p.video) wireVideo(el);
+      if (animate) setTimeout(() => el.classList.remove('hidden-in'), 60 + grid.querySelectorAll('.card').length * 60);
+    });
+  });
+  const moreWrap = document.getElementById('moreWrap'), moreBtn = document.getElementById('moreBtn');
+  moreWrap.style.display = list.length > SITE.initialCards ? '' : 'none';
+  moreBtn.classList.toggle('open', expanded);
+  moreBtn.querySelector('span').textContent = t(expanded ? 'showLess' : 'showMore');
+}
+document.getElementById('moreBtn').onclick = () => {
+  expanded = !expanded;
+  renderGrid(false);
+  if (!expanded) document.getElementById('works').scrollIntoView({ behavior: 'smooth' });
+};
+
+function wireVideo(card) {
+  const v = card.querySelector('video'), fill = card.querySelector('.fill'),
+        range = card.querySelector('input'), time = card.querySelector('.time'), mute = card.querySelector('.mute');
+  card.addEventListener('click', e => {
+    if (e.target.closest('.ctrl, .mute')) return;
+    if (v.paused) {
+      grid.querySelectorAll('video').forEach(o => { if (o !== v) o.pause(); });
+      v.muted = false; mute.innerHTML = VOL_ON;
+      v.play();
+    } else v.pause();
+  });
+  v.addEventListener('play', () => card.classList.add('playing', 'active'));
+  v.addEventListener('pause', () => card.classList.remove('playing'));
+  v.addEventListener('timeupdate', () => {
+    const pct = v.duration ? v.currentTime / v.duration * 100 : 0;
+    fill.style.width = pct + '%'; range.value = pct;
+    time.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration);
+  });
+  range.addEventListener('input', () => { if (v.duration) v.currentTime = range.value / 100 * v.duration; });
+  mute.addEventListener('click', e => {
+    e.stopPropagation();
+    v.muted = !v.muted;
+    mute.innerHTML = v.muted ? VOL_OFF : VOL_ON;
+  });
+}
+
+/* ---------- Частицы за сеткой работ ---------- */
+(function particles() {
+  const c = document.getElementById('particles'), ctx = c.getContext('2d');
+  let W, H, pts = [];
+  const cols = ['168,85,247', '236,72,153', '217,70,239'];
+  function size() {
+    const r = c.getBoundingClientRect();
+    W = c.width = r.width; H = c.height = r.height;
+    pts = Array.from({ length: Math.round(W * H / 18000) }, () => ({
+      x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.6 + .3,
+      vx: (Math.random() - .5) * .15, vy: -Math.random() * .3 - .05,
+      c: cols[Math.random() * 3 | 0], a: Math.random() * .6 + .2,
+    }));
+  }
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < 0) { p.y = H; p.x = Math.random() * W; }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283);
+      ctx.fillStyle = `rgba(${p.c},${p.a})`; ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  new ResizeObserver(size).observe(c);
+  size(); frame();
+})();
+
+/* ---------- «Обо мне»: навыки падают и складываются в кучу (Matter.js) ---------- */
+const skillsPile = (() => {
+  const pit = document.getElementById('pit');
+  const M = window.Matter;   // если CDN не загрузился — плашки просто лежат рядком (CSS)
+  let engine, runner, raf, started = false, items = [], lastW = 0;
+
+  function makeChips() {
+    pit.innerHTML = '';
+    return t('skills').map((s, i) => {
+      const el = document.createElement('span');
+      el.className = 'skill c' + (i % 5);
+      el.textContent = s;
+      pit.appendChild(el);
+      return el;
+    });
+  }
+  function stop() {
+    if (!engine) return;
+    cancelAnimationFrame(raf);
+    M.Runner.stop(runner);
+    M.Engine.clear(engine);
+    engine = null;
+  }
+  function start() {
+    stop();
+    pit.classList.toggle('live', !!M);
+    const els = makeChips();
+    if (!M) return;
+    const W = lastW = pit.clientWidth, H = pit.clientHeight;
+    engine = M.Engine.create();
+    const wall = { isStatic: true };
+    const walls = [
+      M.Bodies.rectangle(W / 2, H + 25, W * 2, 50, wall),                // пол
+      M.Bodies.rectangle(-25, -H / 2, 50, H * 3 + 400, wall),            // левая стенка
+      M.Bodies.rectangle(W + 25, -H / 2, 50, H * 3 + 400, wall),         // правая стенка
+    ];
+    items = els.map((el, i) => {
+      const w = el.offsetWidth, h = el.offsetHeight;
+      const b = M.Bodies.rectangle(
+        w / 2 + Math.random() * Math.max(0, W - w), -h - i * 40 - Math.random() * 30, w, h,
+        { chamfer: { radius: h / 2 }, restitution: .35, friction: .4, frictionAir: .012, angle: (Math.random() - .5) * .8 });
+      return { el, b, w, h };
+    });
+    M.Composite.add(engine.world, [...walls, ...items.map(i => i.b)]);
+
+    // На компьютере плашки можно хватать мышкой и подкидывать
+    if (matchMedia('(hover:hover)').matches) {
+      const mouse = M.Mouse.create(pit);
+      ['mousewheel', 'DOMMouseScroll', 'wheel'].forEach(ev => pit.removeEventListener(ev, mouse.mousewheel)); // не мешаем прокрутке страницы
+      M.Composite.add(engine.world, M.MouseConstraint.create(engine, { mouse, constraint: { stiffness: .2, render: { visible: false } } }));
+    }
+
+    runner = M.Runner.create();
+    M.Runner.run(runner, engine);
+    (function draw() {
+      for (const { el, b, w, h } of items) {
+        el.style.transform = `translate(${b.position.x - w / 2}px,${b.position.y - h / 2}px) rotate(${b.angle}rad)`;
+        el.style.visibility = 'visible';
+      }
+      raf = requestAnimationFrame(draw);
+    })();
+  }
+
+  // Плашки начинают падать, когда карточка показалась на экране
+  new IntersectionObserver((es, o) => {
+    if (!es[0].isIntersecting) return;
+    started = true; o.disconnect(); start();
+  }, { threshold: .4 }).observe(pit);
+
+  let rt;
+  addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { if (started && pit.clientWidth !== lastW) start(); }, 250);
+  });
+
+  return { rebuild() { started ? start() : makeChips(); } };
+})();
+
+/* ---------- Появление при скролле ---------- */
+io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+addEventListener('resize', () => { movePill(langBox); movePill(tabs); });
+setLang(lang);
+document.fonts && document.fonts.ready.then(() => { movePill(langBox); movePill(tabs); });
+</script>
+</body>
+</html>
